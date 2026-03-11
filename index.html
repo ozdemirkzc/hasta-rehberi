@@ -1,14 +1,422 @@
 <!DOCTYPE html>
+
 <html lang="tr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kardiyoloji Hasta Rehberi</title>
-    <meta name="description" content="Kardiyoloji hastalarına yönelik bilgilendirme rehberi" />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🫀</text></svg>" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Kardiyoloji Hasta Rehberi</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🫀</text></svg>" />
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:'Nunito',sans-serif; background:linear-gradient(170deg,#f0f4f8 0%,#e8edf2 50%,#f5f0eb 100%); min-height:100vh; }
+::-webkit-scrollbar { display:none; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.header { background:linear-gradient(135deg,#1a237e 0%,#283593 40%,#3949ab 100%); padding:20px 24px; color:#fff; position:relative; overflow:hidden; }
+.header-circle1 { position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,0.05); }
+.header-circle2 { position:absolute; bottom:-20px; left:30%; width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,0.03); }
+.header h1 { font-size:22px; font-weight:900; letter-spacing:-0.3px; }
+.header p { font-size:13px; opacity:0.8; margin-top:6px; }
+.back-btn { background:rgba(255,255,255,0.15); border:none; color:#fff; padding:6px 14px; border-radius:20px; cursor:pointer; font-size:13px; font-family:'Nunito',sans-serif; margin-bottom:10px; }
+.content { padding:16px 16px 80px; }
+.search-box { position:relative; margin-bottom:16px; }
+.search-box input { width:100%; padding:12px 16px 12px 40px; border:2px solid #e0e0e0; border-radius:12px; font-size:15px; font-family:'Nunito',sans-serif; background:#fff; outline:none; transition:border-color 0.2s; }
+.search-box input:focus { border-color:#3949ab; }
+.search-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:16px; opacity:0.4; }
+.disease-btn { background:#fff; border:none; border-radius:16px; padding:18px 20px; cursor:pointer; text-align:left; box-shadow:0 2px 8px rgba(0,0,0,0.06); transition:all 0.2s ease; display:flex; align-items:center; gap:16px; position:relative; overflow:hidden; width:100%; margin-bottom:12px; }
+.disease-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.1); }
+.disease-icon-box { width:50px; height:50px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0; }
+.disease-name { font-weight:800; font-size:16px; color:#222; margin-bottom:3px; }
+.disease-summary { font-size:13px; color:#777; }
+.disease-arrow { font-size:20px; opacity:0.5; flex-shrink:0; }
+.disease-stripe { position:absolute; left:0; top:0; bottom:0; width:4px; border-radius:4px 0 0 4px; }
+.footer-info { margin-top:24px; padding:16px; background:rgba(57,73,171,0.06); border-radius:12px; text-align:center; font-size:13px; color:#555; line-height:1.6; }
+.tabs { display:flex; overflow-x:auto; background:#fff; border-bottom:1px solid #eee; padding:0 8px; }
+.tab-btn { padding:10px 16px; border:none; border-bottom:3px solid transparent; background:transparent; color:#555; font-weight:500; cursor:pointer; transition:all 0.2s; font-size:14px; font-family:'Nunito',sans-serif; white-space:nowrap; }
+.tab-btn.active { font-weight:700; }
+.tab-content { padding:16px 16px 80px; max-height:calc(100vh - 220px); overflow-y:auto; }
+.info-banner { border-radius:12px; padding:14px 16px; margin-bottom:16px; font-size:14px; color:#444; }
+.card { background:#fff; border-radius:12px; padding:16px; margin-bottom:10px; border-left:4px solid; box-shadow:0 1px 4px rgba(0,0,0,0.06); transition:transform 0.15s,box-shadow 0.15s; }
+.card:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+.card-title { font-weight:700; font-size:15px; margin-bottom:6px; color:#222; }
+.card-detail { font-size:14px; color:#555; line-height:1.6; }
+.emergency-card { background:#fff; border-radius:12px; padding:16px; margin-bottom:10px; border-left:4px solid #C62828; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+.emergency-symptom { font-weight:700; font-size:15px; margin-bottom:8px; color:#C62828; }
+.emergency-action { font-size:14px; color:#333; line-height:1.6; background:#f5f5f5; padding:10px 14px; border-radius:8px; font-weight:600; }
+.emergency-112 { background:linear-gradient(135deg,#C62828,#E53935); border-radius:16px; padding:20px; margin-top:16px; text-align:center; color:#fff; }
+.emergency-112 .number { font-size:28px; font-weight:900; letter-spacing:2px; }
+.qr-section { background:#f8f9fa; border-radius:16px; padding:24px; text-align:center; margin-top:16px; }
+.qr-box { background:#fff; display:inline-block; padding:16px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+.warning-box { border-radius:12px; padding:14px 16px; margin-top:16px; font-size:13px; color:#666; line-height:1.6; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const DISEASES = [
+{
+id: “kah”, name: “Koroner Arter Hastalığı”, icon: “🫀”, color: “#C62828”,
+gradient: “linear-gradient(135deg, #C62828 0%, #E53935 100%)”,
+summary: “Kalp damarlarının daralması veya tıkanması sonucu oluşan hastalık”,
+yapilacaklar: [
+{ title: “Düzenli Egzersiz”, detail: “Haftada en az 150 dakika orta yoğunlukta yürüyüş veya bisiklet. Doktorunuzun önerdiği tempoda başlayın.” },
+{ title: “Kalp Dostu Beslenme”, detail: “Akdeniz diyeti tercih edin: bol sebze-meyve, zeytinyağı, balık, tam tahıllar. Tuz alımını günde 5 gramın altında tutun.” },
+{ title: “İlaç Uyumu”, detail: “Aspirin, statin ve tansiyon ilaçlarınızı doktorunuzun söylediği şekilde her gün düzenli kullanın. Asla kendi kendinize kesmeyin.” },
+{ title: “Stres Yönetimi”, detail: “Derin nefes egzersizleri, meditasyon veya hobi edinin. Kronik stres kalp hastalığını kötüleştirir.” },
+{ title: “Düzenli Kontrol”, detail: “3-6 ayda bir kardiyoloji kontrolüne gidin. Kolesterol ve tansiyon değerlerinizi takip edin.” },
+{ title: “Sigarayı Bırakın”, detail: “Sigara kalp damarlarını doğrudan hasarlar. Bırakma desteği için doktorunuzla konuşun.” }
+],
+kacinilacaklar: [
+{ title: “Aşırı Yağlı Yiyecekler”, detail: “Kızartma, işlenmiş et ürünleri (sosis, sucuk, pastırma), margarin ve trans yağlardan uzak durun.” },
+{ title: “Sigara ve Alkol”, detail: “Sigara kesinlikle yasak. Alkol tüketimini minimumda tutun veya tamamen bırakın.” },
+{ title: “Aşırı Tuz”, detail: “Hazır gıdalar, turşu, salamura ve tuzlu atıştırmalıklardan kaçının.” },
+{ title: “Hareketsiz Yaşam”, detail: “Uzun süre oturmaktan kaçının. Her saat başı kalkıp 5 dakika yürüyün.” },
+{ title: “Ani Ağır Efor”, detail: “Doktorunuza danışmadan ağır kaldırma, yoğun spor yapma gibi aktivitelerden kaçının.” },
+{ title: “İlaç Değişikliği”, detail: “Doktorunuza sormadan ilaç dozu değiştirmeyin, ilacı kesmeyin veya başka ilaç eklemeyin.” }
+],
+ilaclar: [
+{ name: “Aspirin”, note: “Her gün aynı saatte, tok karnına alın. Mide şikayeti olursa doktorunuza bildirin.” },
+{ name: “Statin (Kolesterol İlacı)”, note: “Genellikle akşam alınır. Kas ağrısı olursa doktorunuza haber verin.” },
+{ name: “Beta Bloker”, note: “Nabzı yavaşlatır, düzenli kullanın. Ani kesmeyin.” },
+{ name: “ACE İnhibitörü / ARB”, note: “Tansiyonu düzenler. Kuru öksürük yan etkisi olabilir.” }
+],
+acilDurum: [
+{ belirti: “Göğüs ağrısı veya baskı hissi (5 dakikadan uzun süren)”, eylem: “Hemen 112’yi arayın. Aspirin çiğneyin (allerji yoksa).” },
+{ belirti: “Nefes darlığı ile birlikte terleme”, eylem: “Hareket etmeyin, oturun ve 112’yi arayın.” },
+{ belirti: “Sol kola, çeneye veya sırta yayılan ağrı”, eylem: “Kalp krizi belirtisi olabilir — acil yardım çağırın.” },
+{ belirti: “Bayılma veya baş dönmesi”, eylem: “Düz yere uzanın, bacaklarınızı yukarı kaldırın, 112’yi arayın.” }
+]
+},
+{
+id: “ky”, name: “Kalp Yetmezliği”, icon: “💙”, color: “#1565C0”,
+gradient: “linear-gradient(135deg, #1565C0 0%, #1E88E5 100%)”,
+summary: “Kalbin vücuda yeterli kanı pompalayamadığı durum”,
+yapilacaklar: [
+{ title: “Sıvı Kısıtlaması”, detail: “Günde 1.5-2 litre sıvı tüketin (su, çay, çorba dahil). Doktorunuzun önerisine göre ayarlayın.” },
+{ title: “Günlük Tartı Takibi”, detail: “Her sabah aynı saatte, aç karnına tartılın. 2-3 günde 2 kg’dan fazla artış olursa doktorunuzu arayın.” },
+{ title: “Tuz Kısıtlaması”, detail: “Günde 2 gramın altında tuz tüketin. Hazır gıdalardan uzak durun.” },
+{ title: “Hafif Egzersiz”, detail: “Doktorunuzun onayladığı tempoda düzenli yürüyüş yapın. Yorulduğunuzda durun.” },
+{ title: “İlaç Düzeni”, detail: “Diüretik, ACE inhibitörü, beta bloker gibi ilaçlarınızı düzenli ve zamanında alın.” },
+{ title: “Grip/Zatürre Aşısı”, detail: “Yıllık grip ve zatürre aşılarınızı yaptırın. Enfeksiyonlar kalp yetmezliğini kötüleştirir.” }
+],
+kacinilacaklar: [
+{ title: “Fazla Sıvı”, detail: “Günlük sıvı limitinizi aşmayın. Susadığınızda buz parçası emmek yardımcı olabilir.” },
+{ title: “Tuzlu Gıdalar”, detail: “Çips, kuruyemiş, turşu, konserve, hazır çorbalar ve fast food’dan kaçının.” },
+{ title: “NSAİİ İlaçlar”, detail: “İbuprofen, naproksen gibi ağrı kesicileri kullanmayın — sıvı tutulumunu artırır.” },
+{ title: “Alkol”, detail: “Alkol kalp kasını zayıflatır. Tamamen bırakmanız önerilir.” },
+{ title: “Aşırı Efor”, detail: “Ağır kaldırma ve nefes nefese kalacağınız aktivitelerden kaçının.” },
+{ title: “İlaç Aksatma”, detail: “İyi hissetseniz bile ilaçlarınızı kesmeyin. Düzelme ilaçlar sayesindedir.” }
+],
+ilaclar: [
+{ name: “Diüretik (Furosemid vb.)”, note: “Sabah alın, gece sık idrara çıkmayı önler. Potasyum düzeyinizi takip ettirin.” },
+{ name: “ACE İnhibitörü / ARB / ARNI”, note: “Kalbin iş yükünü azaltır. Düzenli kullanın.” },
+{ name: “Beta Bloker”, note: “Düşük dozdan başlanır, kademeli artırılır. Ani kesmeyin.” },
+{ name: “MRA (Spironolakton)”, note: “Potasyum yükselebilir, düzenli kan testi gerekir.” }
+],
+acilDurum: [
+{ belirti: “Ani şiddetli nefes darlığı (özellikle yatınca artan)”, eylem: “Oturur pozisyona geçin, 112’yi arayın.” },
+{ belirti: “3 günde 2 kg’dan fazla kilo artışı”, eylem: “Sıvı tutulumu — doktorunuzu hemen arayın.” },
+{ belirti: “Bacaklarda belirgin şişlik artışı”, eylem: “Doktorunuzu bilgilendirin, diüretik dozunuz ayarlanabilir.” },
+{ belirti: “Göğüs ağrısı veya çarpıntı”, eylem: “112’yi arayın, hareket etmeden bekleyin.” }
+]
+},
+{
+id: “af”, name: “Atriyal Fibrilasyon”, icon: “⚡”, color: “#6A1B9A”,
+gradient: “linear-gradient(135deg, #6A1B9A 0%, #8E24AA 100%)”,
+summary: “Kalbin düzensiz ve hızlı atması durumu”,
+yapilacaklar: [
+{ title: “Nabız Kontrolü”, detail: “Günde 1-2 kez bileğinizden nabzınızı sayın veya tansiyon aletinizle ölçün. Düzensizlik varsa not edin.” },
+{ title: “Kan Sulandırıcı Uyumu”, detail: “İnme riskini azaltmak için kan sulandırıcınızı her gün aynı saatte, aksatmadan alın.” },
+{ title: “Tetikleyicileri Tanıyın”, detail: “Kafein, alkol, stres, uykusuzluk — hangisi atağı tetikliyor? Günlük tutun.” },
+{ title: “Sağlıklı Kilo”, detail: “Fazla kilo AF ataklarını sıklaştırır. İdeal kilonuza ulaşmaya çalışın.” },
+{ title: “Uyku Düzeni”, detail: “Düzenli ve yeterli uyku alın. Uyku apnesi şüphesi varsa doktorunuza söyleyin.” },
+{ title: “Kontrol Randevuları”, detail: “Düzenli EKG ve kan testi (INR veya böbrek fonksiyonu) takibi yaptırın.” }
+],
+kacinilacaklar: [
+{ title: “Aşırı Kafein”, detail: “Fazla kahve, enerji içeceği ve çay atağı tetikleyebilir. Günde 1-2 fincan ile sınırlayın.” },
+{ title: “Alkol”, detail: “Özellikle aşırı alkol AF atağını tetikler. Mümkünse tamamen bırakın.” },
+{ title: “İlaç Atlama”, detail: “Kan sulandırıcıyı bir gün bile atlamak inme riskini artırır.” },
+{ title: “Bitkisel Takviyeler”, detail: “Sarımsak, ginkgo, omega-3 gibi takviyeler kan sulandırıcıyla etkileşebilir. Doktorunuza danışın.” },
+{ title: “Aşırı Stres”, detail: “Stres ve öfke atakları tetikleyebilir. Rahatlama tekniklerini öğrenin.” },
+{ title: “Düzensiz Uyku”, detail: “Geç yatma, vardiyalı çalışma gibi düzensizliklerden kaçının.” }
+],
+ilaclar: [
+{ name: “Kan Sulandırıcı (Apiksaban, Rivaroksaban, Varfarin vb.)”, note: “İnmeyi önler. Her gün aynı saatte alın. Varfarin kullanıyorsanız düzenli INR ölçtürün.” },
+{ name: “Hız Kontrol İlacı (Beta Bloker, Kalsiyum Kanal Blokeri)”, note: “Kalp hızını yavaşlatır. Nabzınız çok düşerse doktorunuza haber verin.” },
+{ name: “Antiaritmik İlaç”, note: “Ritmi düzenler. Yan etkileri dikkatle takip edilmelidir.” }
+],
+acilDurum: [
+{ belirti: “Ani şiddetli çarpıntı (30 dakikadan uzun)”, eylem: “112’yi arayın. Valsalva manevrası deneyebilirsiniz (doktorunuz öğrettiyse).” },
+{ belirti: “Yüzde, kolda güçsüzlük veya konuşma bozukluğu”, eylem: “İNME BELİRTİSİ — Derhal 112’yi arayın. Dakikalar hayat kurtarır!” },
+{ belirti: “Göğüs ağrısı + nefes darlığı”, eylem: “Hemen 112’yi arayın.” },
+{ belirti: “Bayılma veya göz kararması”, eylem: “Düz yere uzanın, 112’yi arayın.” }
+]
+},
+{
+id: “ht”, name: “Hipertansiyon”, icon: “🩺”, color: “#E65100”,
+gradient: “linear-gradient(135deg, #E65100 0%, #F57C00 100%)”,
+summary: “Yüksek tansiyon — sessiz ama tehlikeli”,
+yapilacaklar: [
+{ title: “Ev Tansiyon Ölçümü”, detail: “Sabah ve akşam, 5 dakika oturduktan sonra ölçün. Değerleri not edin ve kontrole getirin.” },
+{ title: “DASH Diyeti”, detail: “Bol meyve, sebze, az yağlı süt ürünleri, tam tahıllar. Kırmızı eti azaltın.” },
+{ title: “Tuz Azaltma”, detail: “Günde 5 gramın altında tuz. Yemeklere sofrada tuz eklemeyin.” },
+{ title: “Düzenli Egzersiz”, detail: “Haftada 5 gün, 30 dakika tempolu yürüyüş. Tansiyonu 5-8 mmHg düşürebilir.” },
+{ title: “Kilo Kontrolü”, detail: “Her 1 kg vermek tansiyonu yaklaşık 1 mmHg düşürür.” },
+{ title: “İlaç Uyumu”, detail: “Tansiyon ilacınızı her gün aynı saatte alın. İyi olduğunuzu hissetseniz bile bırakmayın.” }
+],
+kacinilacaklar: [
+{ title: “Tuz ve Sodyum”, detail: “Hazır gıdalar, konserve, cips, peynir çeşitleri — hepsi gizli tuz kaynağı.” },
+{ title: “Sigara”, detail: “Her sigara tansiyonu geçici olarak yükseltir ve damarları kalıcı olarak hasarlar.” },
+{ title: “Aşırı Alkol”, detail: “Alkol tansiyonu yükseltir ve ilacınızın etkisini azaltır.” },
+{ title: “Stres”, detail: “Kronik stres tansiyonu sürekli yüksek tutar. Baş etme yöntemleri geliştirin.” },
+{ title: “NSAİİ Kullanımı”, detail: “İbuprofen gibi ağrı kesiciler tansiyonu yükseltir. Parasetamol tercih edin.” },
+{ title: “Meyan Kökü”, detail: “Meyan kökü içeren yiyecek ve içecekler tansiyonu yükseltir.” }
+],
+ilaclar: [
+{ name: “ACE İnhibitörü (Ramipril, Enalapril vb.)”, note: “Sabah alınır. Kuru öksürük yapabilir — doktorunuza söyleyin.” },
+{ name: “ARB (Valsartan, Losartan vb.)”, note: “ACE inhibitörüne alternatif. Daha az öksürük yapar.” },
+{ name: “Kalsiyum Kanal Blokeri (Amlodipin)”, note: “Ayak bileği şişliği yapabilir. Greyfurt ile etkileşir!” },
+{ name: “Diüretik (Hidroklorotiyazid)”, note: “Sabah alın. Potasyum düşüklüğüne dikkat.” }
+],
+acilDurum: [
+{ belirti: “Tansiyon 180/120 üzeri + baş ağrısı”, eylem: “Hipertansif kriz — 112’yi arayın.” },
+{ belirti: “Bulanık görme veya göz kararması”, eylem: “Hemen acile gidin.” },
+{ belirti: “Şiddetli baş ağrısı + bulantı/kusma”, eylem: “Hareket etmeyin, 112’yi arayın.” },
+{ belirti: “Burun kanaması (uzun süren)”, eylem: “Başınızı öne eğin, burnu sıkın. 15 dakikada durmazsa acile gidin.” }
+]
+},
+{
+id: “kapak”, name: “Kalp Kapak Hastalığı”, icon: “🔄”, color: “#00695C”,
+gradient: “linear-gradient(135deg, #00695C 0%, #00897B 100%)”,
+summary: “Kalp kapaklarının yeterince açılamaması veya kapanamaması”,
+yapilacaklar: [
+{ title: “Düzenli Ekokardiyografi”, detail: “6-12 ayda bir ekokardiyografi ile kapak fonksiyonu ve kalp boyutları takip edilmelidir.” },
+{ title: “Endokardit Profilaksisi”, detail: “Diş işlemleri veya bazı cerrahi işlemlerden önce antibiyotik almanız gerekebilir. Doktorunuza danışın.” },
+{ title: “Semptom Takibi”, detail: “Nefes darlığı, çarpıntı, baş dönmesi, göğüs ağrısı gibi belirtileri not edin.” },
+{ title: “Hafif-Orta Egzersiz”, detail: “Doktorunuzun onayladığı seviyede düzenli egzersiz yapın.” },
+{ title: “Diş Sağlığı”, detail: “Düzenli diş kontrolü çok önemli — ağız enfeksiyonları kalp kapağına yerleşebilir.” },
+{ title: “İlaç Düzeni”, detail: “Varfarin kullanıyorsanız INR takibini düzenli yaptırın.” }
+],
+kacinilacaklar: [
+{ title: “Ağır Fiziksel Efor”, detail: “Ciddi kapak hastalığında ağır egzersiz tehlikeli olabilir. Doktorunuza danışın.” },
+{ title: “Diş Tedavisi İhmali”, detail: “Tedavisiz diş enfeksiyonları endokardite (kalp kapağı enfeksiyonu) yol açabilir.” },
+{ title: “Kontrolsüz İlaç Kullanımı”, detail: “Özellikle kan sulandırıcı kullanıyorsanız, hiçbir ilacı danışmadan eklemeyin.” },
+{ title: “K Vitamini Değişimleri”, detail: “Varfarin kullanıyorsanız yeşil yapraklı sebze tüketimini sabit tutun, ani artırmayın/azaltmayın.” },
+{ title: “Enfeksiyon Riskli Ortamlar”, detail: “Grip mevsiminde kalabalık ortamlardan kaçının, maske kullanın.” },
+{ title: “Gebelik Planı (Danışmadan)”, detail: “Kapak hastalığı olan kadınlar gebelik öncesi mutlaka kardiyoloji değerlendirmesi yaptırmalı.” }
+],
+ilaclar: [
+{ name: “Varfarin (Mekanik kapak)”, note: “Düzenli INR takibi şart. Doz ayarını doktorunuz yapar. K vitamini alımını sabit tutun.” },
+{ name: “DOAK (Biyoprotez kapak sonrası)”, note: “Mekanik kapakta kullanılmaz! Sadece doktorunuz önerdiyse.” },
+{ name: “Diüretik”, note: “Şikayetler artarsa sıvı yükünü azaltmak için verilebilir.” },
+{ name: “Beta Bloker”, note: “Kalp hızını kontrol eder, özellikle AF eşlik ediyorsa.” }
+],
+acilDurum: [
+{ belirti: “Ani şiddetli nefes darlığı”, eylem: “Oturun, 112’yi arayın.” },
+{ belirti: “Bayılma (senkop)”, eylem: “Ciddi kapak darlığı belirtisi olabilir — acil değerlendirme şart.” },
+{ belirti: “Ateş + titreme (kapak protezi varsa)”, eylem: “Endokardit şüphesi — hemen acile gidin.” },
+{ belirti: “Ani kol/bacak güçsüzlüğü veya konuşma bozukluğu”, eylem: “Embolik olay (inme) — derhal 112’yi arayın.” }
+]
+},
+{
+id: “mi”, name: “Miyokard İnfarktüsü Sonrası”, icon: “🏥”, color: “#AD1457”,
+gradient: “linear-gradient(135deg, #AD1457 0%, #D81B60 100%)”,
+summary: “Kalp krizi sonrası iyileşme ve korunma rehberi”,
+yapilacaklar: [
+{ title: “Kardiyak Rehabilitasyon”, detail: “Doktorunuzun önerdiği rehabilitasyon programına katılın. İyileşmeyi hızlandırır ve tekrar riski azaltır.” },
+{ title: “Kademeli Aktivite”, detail: “İlk haftalarda hafif yürüyüşle başlayın. 6-8 haftada normal aktiviteye dönebilirsiniz.” },
+{ title: “İlaç Tedavisi”, detail: “Çifte antiplatelet, statin, beta bloker, ACE inhibitörü — hepsini düzenli kullanın.” },
+{ title: “Risk Faktörü Kontrolü”, detail: “Tansiyon <130/80, LDL <55, HbA1c <7 hedefleyin. Düzenli kontrol yaptırın.” },
+{ title: “Psikolojik Destek”, detail: “Kalp krizi sonrası kaygı ve depresyon sık görülür. Profesyonel destek almaktan çekinmeyin.” },
+{ title: “Cinsel Aktivite”, detail: “2 merdiven çıkabiliyorsanız genelde güvenlidir. Doktorunuzla açıkça konuşun.” }
+],
+kacinilacaklar: [
+{ title: “Sigara”, detail: “Kesinlikle bırakın. Tekrar infarkt riskini %50 azaltır.” },
+{ title: “Ani Ağır Efor”, detail: “İlk 6 hafta ağır kaldırma, yoğun spor yapmayın.” },
+{ title: “Stresli Ortamlar”, detail: “Aşırı stresli durumlardan kaçının. Stres yönetimi öğrenin.” },
+{ title: “İlaç İhmali”, detail: “Özellikle çifte antiplatelet tedaviyi stent varsa en az 12 ay kullanın.” },
+{ title: “Doymuş Yağlar”, detail: “Kırmızı et, tereyağı, krema ve işlenmiş gıdaları minimuma indirin.” },
+{ title: “Araç Kullanımı (Erken Dönem)”, detail: “İlk 1-4 hafta araç kullanmayın. Doktorunuzun onayını alın.” }
+],
+ilaclar: [
+{ name: “Aspirin”, note: “Ömür boyu kullanım. Mide koruyucu ile birlikte alabilirsiniz.” },
+{ name: “P2Y12 İnhibitörü (Klopidogrel, Tikagrelor)”, note: “Stent sonrası en az 12 ay. Erken kesmeyin!” },
+{ name: “Yüksek Doz Statin”, note: “LDL <55 hedefi. Kas ağrısı olursa doktorunuza söyleyin.” },
+{ name: “Beta Bloker”, note: “Kalbi korur, tekrar infarkt riskini azaltır. Ani kesmeyin.” }
+],
+acilDurum: [
+{ belirti: “Tekrar göğüs ağrısı (ilk sefere benzer)”, eylem: “TEKRAR İNFARKT olabilir — Derhal 112’yi arayın!” },
+{ belirti: “Artan nefes darlığı + ödem”, eylem: “Kalp yetmezliği gelişiyor olabilir — acile gidin.” },
+{ belirti: “Çarpıntı + baş dönmesi”, eylem: “Aritmi olabilir — 112’yi arayın.” },
+{ belirti: “Stent bölgesinde ağrı (kateter giriş yeri)”, eylem: “Şişlik, kızarıklık veya kanama varsa acile gidin.” }
+]
+}
+];
+
+const TABS = [
+{ key: “yapilacaklar”, label: “✅ Yapılacaklar” },
+{ key: “kacinilacaklar”, label: “⛔ Kaçınılacaklar” },
+{ key: “ilaclar”, label: “💊 İlaçlar” },
+{ key: “acilDurum”, label: “🚨 Acil Durum” },
+{ key: “qr”, label: “📱 QR Kod” }
+];
+
+function App() {
+const [selectedId, setSelectedId] = useState(null);
+const [activeTab, setActiveTab] = useState(“yapilacaklar”);
+const [search, setSearch] = useState(””);
+
+const disease = DISEASES.find(d => d.id === selectedId);
+const filtered = DISEASES.filter(d => d.name.toLowerCase().includes(search.toLowerCase()));
+
+if (!selectedId) {
+return (
+<div>
+<div className="header">
+<div className="header-circle1"></div>
+<div className="header-circle2"></div>
+<div style={{display:“flex”,alignItems:“center”,gap:“10px”,marginBottom:“4px”}}>
+<span style={{fontSize:“28px”}}>🫀</span>
+<h1>Kardiyoloji Hasta Rehberi</h1>
+</div>
+<p>Hastalığınızı seçerek size özel bilgilere ulaşın</p>
+</div>
+<div className="content">
+<div className="search-box">
+<span className="search-icon">🔍</span>
+<input placeholder=“Hastalık ara…” value={search} onChange={e=>setSearch(e.target.value)} />
+</div>
+{filtered.map((d,i) => (
+<button key={d.id} className=“disease-btn” onClick={()=>{setSelectedId(d.id);setActiveTab(“yapilacaklar”);}} style={{animation:`fadeIn 0.3s ease ${i*0.05}s both`}}>
+<div className="disease-stripe" style={{background:d.gradient}}></div>
+<div className=“disease-icon-box” style={{background:d.color+“12”}}>{d.icon}</div>
+<div style={{flex:1}}>
+<div className="disease-name">{d.name}</div>
+<div className="disease-summary">{d.summary}</div>
+</div>
+<div className="disease-arrow" style={{color:d.color}}>›</div>
+</button>
+))}
+<div className="footer-info">⚕️ Bu rehber genel bilgilendirme amaçlıdır.<br/>Tedavinizle ilgili kararları doktorunuzla birlikte verin.</div>
+</div>
+</div>
+);
+}
+
+return (
+<div>
+<div className="header">
+<div className="header-circle1"></div>
+<div className="header-circle2"></div>
+<button className=“back-btn” onClick={()=>setSelectedId(null)}>← Geri Dön</button>
+<div style={{display:“flex”,alignItems:“center”,gap:“12px”}}>
+<span style={{fontSize:“36px”}}>{disease.icon}</span>
+<div>
+<h1>{disease.name}</h1>
+<p style={{marginTop:“4px”}}>{disease.summary}</p>
+</div>
+</div>
+</div>
+
+```
+<div className="tabs">
+{TABS.map(t => (
+<button key={t.key} className={"tab-btn"+(activeTab===t.key?" active":"")}
+style={activeTab===t.key?{borderBottomColor:disease.color,color:disease.color,background:disease.color+"11"}:{}}
+onClick={()=>setActiveTab(t.key)}>{t.label}</button>
+))}
+</div>
+
+<div className="tab-content">
+{activeTab === "yapilacaklar" && (
+<div>
+<div className="info-banner" style={{background:disease.color+"08",border:"1px solid "+disease.color+"20"}}>
+✅ <strong>İyileşmeniz ve sağlığınızı korumanız için yapmanız gerekenler</strong>
+</div>
+{disease.yapilacaklar.map((item,i) => (
+<div key={i} className="card" style={{borderLeftColor:disease.color}}>
+<div className="card-title">✅ {item.title}</div>
+<div className="card-detail">{item.detail}</div>
+</div>
+))}
+</div>
+)}
+
+{activeTab === "kacinilacaklar" && (
+<div>
+<div className="info-banner" style={{background:"#fff3e0",border:"1px solid #ffe0b2"}}>
+⛔ <strong>Hastalığınızı kötüleştirebilecek durumlardan kaçının</strong>
+</div>
+{disease.kacinilacaklar.map((item,i) => (
+<div key={i} className="card" style={{borderLeftColor:"#E65100"}}>
+<div className="card-title">⛔ {item.title}</div>
+<div className="card-detail">{item.detail}</div>
+</div>
+))}
+</div>
+)}
+
+{activeTab === "ilaclar" && (
+<div>
+<div className="info-banner" style={{background:"#e8f5e9",border:"1px solid #c8e6c9"}}>
+💊 <strong>İlaçlarınızı düzenli ve doğru şekilde kullanmak çok önemlidir</strong>
+</div>
+{disease.ilaclar.map((item,i) => (
+<div key={i} className="card" style={{borderLeftColor:"#2E7D32"}}>
+<div className="card-title">💊 {item.name}</div>
+<div className="card-detail">{item.note}</div>
+</div>
+))}
+<div className="warning-box" style={{background:"#fff8e1",border:"1px solid #ffecb3"}}>
+⚠️ <strong>Önemli:</strong> Bu ilaç bilgileri genel rehberdir. Doktorunuzun size özel verdiği ilaç listesi ve dozlarına uyun.
+</div>
+</div>
+)}
+
+{activeTab === "acilDurum" && (
+<div>
+<div className="info-banner" style={{background:"#ffebee",border:"1px solid #ffcdd2",color:"#c62828",fontWeight:700}}>
+🚨 Bu belirtilerde vakit kaybetmeden harekete geçin!
+</div>
+{disease.acilDurum.map((item,i) => (
+<div key={i} className="emergency-card">
+<div className="emergency-symptom">⚠️ {item.belirti}</div>
+<div className="emergency-action">→ {item.eylem}</div>
+</div>
+))}
+<div className="emergency-112">
+<div style={{fontSize:"32px",marginBottom:"8px"}}>📞</div>
+<div className="number">112</div>
+<div style={{fontSize:"14px",marginTop:"4px",opacity:0.9}}>Acil Sağlık Hattı</div>
+</div>
+</div>
+)}
+
+{activeTab === "qr" && (
+<div className="qr-section">
+<div style={{fontSize:"15px",fontWeight:700,marginBottom:"12px",color:"#333"}}>📱 QR Kod ile Hasta Erişimi</div>
+<div className="qr-box">
+<img src={"https://api.qrserver.com/v1/create-qr-code/?size=200x200&data="+encodeURIComponent("Kardiyoloji Hasta Rehberi: "+disease.name)} alt="QR Kod" style={{width:"160px",height:"160px"}} />
+</div>
+<div style={{fontSize:"13px",color:"#777",marginTop:"12px",maxWidth:"300px",margin:"12px auto 0"}}>
+Bu QR kodu muayenehaneye asabilirsiniz. Hasta telefonuyla tarayarak bilgilere erişebilir.
+</div>
+</div>
+)}
+</div>
+</div>
+```
+
+);
+}
+
+ReactDOM.createRoot(document.getElementById(‘root’)).render(<App />);
+</script>
+
+</body>
 </html>
